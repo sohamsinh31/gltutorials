@@ -34,7 +34,7 @@ if(WIN32)
     set(CMAKE_EXE_LINKER_FLAGS "-std=gnu99 -static -static-libgcc -static-libstdc++ -mwindows")
 else()
     list(APPEND EXTRA_LIBS
-        "-lGL -lGLU -lX11 -lXrandr  -lXxf86vm  -lXi  -lXinerama  -lXcursor  -pthread"
+        "-lGL -lGLU -lglfw -lX11 -lXrandr  -lXxf86vm  -lXi  -lXinerama  -lXcursor  -pthread"
     )
 endif()
 

@@ -1,5 +1,5 @@
-#include "include/GL/glew.h"
-#include "include/GLFW/glfw3.h"
+#include "GL/glew.h"
+#include "GLFW/glfw3.h"
 #include "stdio.h"
 #include "math.h"
 #include "iostream"
@@ -7,18 +7,19 @@
 float vertices[] = {
     -0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f,
     0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f,
-    0.0f, 0.5f * float(sqrt(3)) / 3, 0.0f};
+    0.0f, 0.5f * float(sqrt(3)) / 3, 0.0f,
+    };
 
 char *shaderSource =
-    "#version 330 core;\n"
+    "#version 330 core\n"
     "layout (location = 0) in vec3 aPos;\n"
     "void main()\n"
     "{\n"
-    "gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+    "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
     "}\0";
 
 char *FshaderSource =
-    "#version 330 core;\n"
+    "#version 330 core\n"
     "out vec4 FragColor;\n"
     "void main()\n"
     "{\n"
