@@ -40,12 +40,12 @@ int main()
     VAO vao1;
     vao1.Bind();
     VBO VBO1(vertices,sizeof(vertices));
-    EBO EBO1(indices,sizeof(indices));
+    //EBO EBO1(indices,sizeof(indices));
 
     vao1.LinkVBO(VBO1,0);
     vao1.Unbind();
     VBO1.Unbind();
-    EBO1.Unbind();
+    //EBO1.Unbind();
 
     glViewport(0, 0, 800, 600);
     while (!glfwWindowShouldClose(window))
@@ -55,13 +55,13 @@ int main()
         glLoadIdentity();
         shaderProgram.Activate();
         vao1.Bind();
-        glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
     vao1.Delete();
     VBO1.Delete();
-    EBO1.Delete();
+    //EBO1.Delete();
     shaderProgram.Delete();
     glfwTerminate();
     return 0;
