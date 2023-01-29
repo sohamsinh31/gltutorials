@@ -12,6 +12,7 @@ add_definitions(-DGL_SILENCE_DEPRECATION)
 set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/bin)
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 SET(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin/libs)
+file(COPY Assets DESTINATION ${CMAKE_BINARY_DIR})
 include_directories(${PROJECT_SOURCE_DIR})
 include_directories(${PROJECT_SOURCE_DIR}/include)
 find_package(GLEW REQUIRED)
@@ -23,6 +24,10 @@ include_directories(${GLEW_INCLUDE_DIRS})
 
 list(APPEND SOURCES
     window.cpp
+    Headers/EBO.cpp
+    Headers/VBO.cpp
+    Headers/VAO.cpp
+    Headers/sources.cpp
 )
 
 add_executable(Random ${SOURCES})
