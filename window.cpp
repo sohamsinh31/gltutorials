@@ -5,27 +5,15 @@
 #include "math.h"
 
 float vertices[] = {
-    -0.5f,
-    -0.5f * float(sqrt(3)) / 3,
-    0.0f,
-    0.5f,
-    -0.5f * float(sqrt(3)) / 3,
-    0.0f,
-    0.0f,
-    0.5f * float(sqrt(3)) * 2 / 3,
-    0.0f,
-    -0.5f / 2,
-    -0.5f * float(sqrt(3)) / 6,
-    0.0f,
-    0.5f / 2,
-    -0.5f * float(sqrt(3)) / 6,
-    0.0f,
-    0.0f,
-    0.5f * float(sqrt(3)) / 3,
-    0.0f,
+    -0.5f,-0.5f * float(sqrt(3)) / 3,0.0f,
+    0.5f,-0.5f * float(sqrt(3)) / 3,0.0f,
+    0.0f,0.5f * float(sqrt(3)) * 2 / 3,0.0f,
+    -0.5f / 2,-0.5f * float(sqrt(3)) / 6,0.0f,
+    0.5f / 2,-0.5f * float(sqrt(3)) / 6,0.0f,
+    0.0f,-0.5f * float(sqrt(3)) / 3,0.0f,
 };
 
-float indices[] = {
+GLfloat indices[] = {
     0,3,5,
     3,2,4,
     5,4,1,
@@ -64,6 +52,7 @@ int main()
     {
         glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+        glLoadIdentity();
         shaderProgram.Activate();
         vao1.Bind();
         glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
