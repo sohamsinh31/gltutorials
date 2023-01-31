@@ -13,9 +13,9 @@ class VAO
 {
     public:
         GLuint ID;
-        VAO();
+        VAO(GLuint id);
 
-        void LinkVBO(VBO VBO,GLuint layout);
+        void LinkVBO(VBO VBO,GLfloat layout);
         void Bind();
         void Unbind();
         void Delete(); 

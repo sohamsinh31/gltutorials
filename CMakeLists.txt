@@ -23,7 +23,7 @@ find_package(GLEW REQUIRED)
 include_directories(${GLEW_INCLUDE_DIRS})
 
 list(APPEND SOURCES
-    window.cpp
+    Random/main.cpp
     Headers/EBO.cpp
     Headers/VBO.cpp
     Headers/VAO.cpp
@@ -34,12 +34,12 @@ add_executable(Random ${SOURCES})
 
 if(WIN32)
     list(APPEND EXTRA_LIBS
-        "-lglfw3 -lglu32 -lopengl32 -lglew32"
+        "-lglfw3 -lSOIL -lglu32 -lopengl32 -lglew32"
     )
     set(CMAKE_EXE_LINKER_FLAGS "-std=gnu99 -static -static-libgcc -static-libstdc++ -mwindows")
 else()
     list(APPEND EXTRA_LIBS
-        "-lGL -lGLU -lglfw -lX11 -lXrandr  -lXxf86vm  -lXi  -lXinerama  -lXcursor  -pthread"
+        "-lGL -lGLU -lSOIL -lGLEW -lglfw"
     )
 endif()
 

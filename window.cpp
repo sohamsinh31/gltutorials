@@ -4,37 +4,19 @@
 #include "Headers/shader.h"
 #include "math.h"
 
+GLint windowWidth, windowHeight;
+Shader shaderProgram;
+
 // float vertices[] = {
-//     -0.5f,
-//     -0.5f * float(sqrt(3)) / 3,
-//     0.0f,
-//     0.5f,
-//     -0.5f * float(sqrt(3)) / 3,
-//     0.0f,
-//     0.0f,
-//     0.5f * float(sqrt(3)) * 2 / 3,
-//     0.0f,
-//     -0.5f / 2,
-//     -0.5f * float(sqrt(3)) / 6,
-//     0.0f,
-//     0.5f / 2,
-//     -0.5f * float(sqrt(3)) / 6,
-//     0.0f,
-//     0.0f,
-//     -0.5f * float(sqrt(3)) / 3,
-//     0.0f,
+//     0.5f, 0.5f, 0.0f, // top right
+//     0.5f, -0.5f, 0.0f, // bottom right
+//     -0.5f, -0.5f, 0.0f, // bottom left
+//     -0.5f, 0.5f, 0.0f // top left
 // };
 
 GLfloat indices[] = {
-    0,
-    3,
-    5,
-    3,
-    2,
-    4,
-    5,
-    4,
-    1,
+    0, 1, 3, // first triangle
+    1, 2, 3
 };
 
 GLfloat vertices[] =
@@ -54,6 +36,8 @@ GLfloat colors[] =
         0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0,
         0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0,
         0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1};
+
+GLFWwindow *window;
 
 void drawCube()
 {
@@ -77,10 +61,9 @@ void drawCube()
     alpha += 1;
 }
 
-void display(GLFWwindow *window)
+void display()
 {
     // Scale to window size
-    GLint windowWidth, windowHeight;
     glfwGetWindowSize(window, &windowWidth, &windowHeight);
     glViewport(0, 0, windowWidth, windowHeight);
 
@@ -99,7 +82,7 @@ void display(GLFWwindow *window)
 int main()
 {
     glfwInit();
-    GLFWwindow *window = glfwCreateWindow(800, 600, "LearnOpenGL", NULL, NULL);
+    window = glfwCreateWindow(800, 600, "LearnOpenGL", NULL, NULL);
     if (window == NULL)
     {
         printf("Failed to create GLFW window");
@@ -109,20 +92,21 @@ int main()
     GLenum err;
     glfwMakeContextCurrent(window);
     glewExperimental = GL_TRUE;
-    if (!glewInit())
+    if (glewInit() != GLEW_OK)
     {
         std::cout << glewGetErrorString(err) << "\n";
     }
-    Shader shaderProgram("Assets/def.vert", "Assets/def.frag");
+    shaderProgram = Shader("Assets/def.vert", "Assets/def.frag");
     VAO vao1;
+    vao1 = VAO();
     vao1.Bind();
     VBO VBO1(vertices, sizeof(vertices));
-    // EBO EBO1(indices,sizeof(indices));
+    EBO EBO1(indices,sizeof(indices));
 
     vao1.LinkVBO(VBO1, 0);
     vao1.Unbind();
     VBO1.Unbind();
-    // EBO1.Unbind();
+    EBO1.Unbind();
 
     glViewport(0, 0, 800, 600);
     while (!glfwWindowShouldClose(window))
@@ -131,14 +115,15 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         // shaderProgram.Activate();
         // vao1.Bind();
-        // glDrawArrays(GL_TRIANGLES, 0, 3);
-        display(window);
+        //glDrawArrays(GL_QUADS, 0, 24);
+        //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        display();
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
     vao1.Delete();
     VBO1.Delete();
-    // EBO1.Delete();
+    EBO1.Delete();
     shaderProgram.Delete();
     glfwTerminate();
     return 0;

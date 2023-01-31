@@ -16,6 +16,11 @@ std::string get_file(const char* filename)
     throw(errno);
 }
 
+Shader :: Shader()
+{
+    std::cout<<"Declare files first\n";
+}
+
 Shader::Shader(const char* vertexfile,const char* fragfile){
     std::string vertex_code = get_file(vertexfile);
     std::string frag_code = get_file(fragfile);

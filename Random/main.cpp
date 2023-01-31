@@ -1,102 +1,131 @@
-#include <stdio.h>
-#include "iostream"
-#include <stdlib.h>
-#include "../include/GLFW/glfw3.h"
-#include "./video_reader.hpp""
-#include "./glfww.h"
+#include <iostream>
+#define GLEW_STATIC
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+#include "SOIL2/SOIL2.h"
+#include "Shader.h"
+#include "Headers/EBO.h"
+#include "Headers/VBO.h"
+#include "Headers/VAO.h"
 
-GLFWwindow* window;
-VideoReaderState vr_state;
-using namespace std;
-const int ALIGNMENT = 128;
-int frame_width;
-int frame_height;
-uint8_t* frame_data;
+const GLuint WIDTH = 800, HEIGHT = 600;
 
-int LoadVideo(){
-    GLuint tex_handle;
-    glGenTextures(1, &tex_handle);
-    glBindTexture(GL_TEXTURE_2D, tex_handle);
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-    //glfwMaximizeWindow(window);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    // Set up orphographic projection
-    int window_width, window_height;
-    glfwGetFramebufferSize(window, &window_width, &window_height);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    float aspect = window_width / window_height;
-    cout<<"Width:"<<window_width<<" Height:"<<window_height<<" Aspect:"<<aspect<<"\n";
-    glViewport(0, 0, window_width, window_height);
-    glOrtho(window_width/8, (window_width), window_height, window_height/5, 1.0, -1.0);
-    glMatrixMode(GL_MODELVIEW);
-    // Read a new frame and load it into texture
-    int64_t pts;
-    if (!video_reader_read_frame(&vr_state, frame_data, &pts)) {
-        printf("Couldn't load video frame\n");
-        return 1;
-    }
-    static bool first_frame = true;
-    if (first_frame) {
-        glfwSetTime(0.0);
-        first_frame = false;
-    }
-    double pt_in_seconds = pts * (double)vr_state.time_base.num / (double)vr_state.time_base.den;
-    while (pt_in_seconds > glfwGetTime()) {
-        glfwWaitEventsTimeout(pt_in_seconds - glfwGetTime());
-    }
-    glBindTexture(GL_TEXTURE_2D, tex_handle);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, frame_width, frame_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, frame_data);
-    // Render whatever you want
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, tex_handle);
-    glBegin(GL_QUADS);
-    glTexCoord2d(0,0); glVertex2i(window_width/8, window_height/5);
-    glTexCoord2d(1,0); glVertex2i( window_width, window_height/5);
-    glTexCoord2d(1,1); glVertex2i( window_width,  window_height);
-    glTexCoord2d(0,1); glVertex2i(window_width/8,  window_height);
-    glEnd();
-    glDisable(GL_TEXTURE_2D);
-    glfwSwapBuffers(window);
-    glfwPollEvents();
+void drawCube()
+{
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glEnableClientState(GL_COLOR_ARRAY);
+    glDrawArrays(GL_QUADS, 0, 24);
+    glDisableClientState(GL_COLOR_ARRAY);
+    glDisableClientState(GL_VERTEX_ARRAY);
 }
 
-int main(int argc, const char** argv) {
-    if (!glfwInit()) {
-        printf("Couldn't init GLFW\n");
-        return 1;
+void display(GLFWwindow *window)
+{
+    // Scale to window size
+    GLint windowWidth, windowHeight;
+    glfwGetWindowSize(window, &windowWidth, &windowHeight);
+    glViewport(0, 0, windowWidth, windowHeight);
+    glMatrixMode(GL_PROJECTION_MATRIX);
+    glLoadIdentity();
+    gluPerspective(60, (double)windowWidth / (double)windowHeight, 0.1, 100);
+    glMatrixMode(GL_MODELVIEW_MATRIX);
+    glTranslatef(0, 0, -5);
+
+    drawCube();
+}
+
+int main( )
+{
+    glfwInit( );
+    GLFWwindow *window = glfwCreateWindow( WIDTH, HEIGHT, "LearnOpenGL", nullptr, nullptr );
+    int screenWidth, screenHeight;
+    glfwGetFramebufferSize( window, &screenWidth, &screenHeight );
+    if ( nullptr == window )
+    {
+        std::cout << "Failed to create GLFW window" << std::endl;
+        glfwTerminate( );
+        
+        return EXIT_FAILURE;
     }
-    GLFWmonitor* MyMonitor =  glfwGetPrimaryMonitor(); // The primary monitor.. Later Occulus?..
-    const GLFWvidmode* mode = glfwGetVideoMode(MyMonitor);
-    window = glfwCreateWindow(800,600,"Astravarse",NULL,NULL);
-    //window=glfwCreateWindow(glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height, "AstraVerse",glfwGetPrimaryMonitor(), nullptr);
-    if (!window) {
-        printf("Couldn't open window\n");
-        return 1;
+    glfwMakeContextCurrent( window );
+    glewExperimental = GL_TRUE;
+    if ( GLEW_OK != glewInit( ) )
+    {
+        std::cout << "Failed to initialize GLEW" << std::endl;
+        return EXIT_FAILURE;
     }
-    if (!video_reader_open(&vr_state, "/media/soham/win10/Users/lenov/Videos/logov.mp4")) {
-        printf("Couldn't open video file (make sure you set a video file that exists)\n");
-        return 1;
+    glViewport( 0, 0, screenWidth, screenHeight );
+    glEnable( GL_BLEND );
+    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    Shader ourShader( "res/shaders/core.vs", "res/shaders/core.frag" );
+    GLfloat vertices[] =
+    {
+        // Positions          // Colors           // Texture Coords
+        1.5f,  1.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // Top Right
+        1.5f, -1.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // Bottom Right
+        -1.5f, -1.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // Bottom Left
+        -1.5f,  1.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // Top Left
+    };
+    GLfloat indices[] =
+    {  // Note that we start from 0!
+        0, 1, 3, // First Triangle
+        1, 2, 3  // Second Triangle
+    };
+    GLuint VBO, VAO, EBO;
+    glGenVertexArrays( 1, &VAO );
+    glGenBuffers( 1, &VBO );
+    glGenBuffers( 1, &EBO );
+    
+    glBindVertexArray( VAO );
+    
+    glBindBuffer(GL_ARRAY_BUFFER, VBO );
+    glBufferData(GL_ARRAY_BUFFER,sizeof( vertices ), vertices, GL_STATIC_DRAW );
+
+    glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, EBO );
+    glBufferData( GL_ELEMENT_ARRAY_BUFFER, sizeof( indices ), indices, GL_STATIC_DRAW );
+    glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof( GLfloat ), ( GLvoid * ) 0 );
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer( 1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof( GLfloat ), ( GLvoid * )( 3 * sizeof( GLfloat ) ) );
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer( 2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof( GLfloat ), ( GLvoid * )( 6 * sizeof( GLfloat ) ) );
+    glEnableVertexAttribArray( 2 );
+    
+    glBindVertexArray(0); // Unbind VAO
+    GLuint texture;
+    int width, height;
+    glGenTextures( 1, &texture );
+    glBindTexture( GL_TEXTURE_2D, texture );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+    unsigned char *image = SOIL_load_image( "res/images/454841.jpg", &width, &height, 0, SOIL_LOAD_RGBA );
+    glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image );
+    glGenerateMipmap( GL_TEXTURE_2D );
+    SOIL_free_image_data( image );
+    glBindTexture( GL_TEXTURE_2D, 0 );
+    
+    while (!glfwWindowShouldClose(window))
+    {
+        glfwPollEvents();
+        glClearColor( 1.0f, 1.0f, 1.0f, 1.0f );
+        glClear( GL_COLOR_BUFFER_BIT );
+        //std::cout<<"VAO:"<<VAO<<"VBO:"<<VBO<<"EBO:"<<EBO<<"\n";
+        // Draw the triangle
+        ourShader.Use( );
+        glActiveTexture( GL_TEXTURE0 );
+        glBindTexture( GL_TEXTURE_2D, texture );
+        glUniform1i( glGetUniformLocation( ourShader.Program, "ourTexture" ), 0 );
+        // Draw container
+        glBindVertexArray(VAO);
+        display(window);
+        glBindVertexArray( 0 );
+        glfwSwapBuffers( window );
     }
-    glfwMakeContextCurrent(window);
-    // Generate texture
-    // Allocate frame buffer
-    //int ALIGNMENT = 128;
-    frame_width = vr_state.width;
-    frame_height = vr_state.height;
-    //uint8_t* frame_data;
-    if (posix_memalign((void**)&frame_data, ALIGNMENT, frame_width * frame_height * 4) != 0) {
-        printf("Couldn't allocate frame buffer\n");
-        return 1;
-    }
-    while (!glfwWindowShouldClose(window)) {
-        LoadVideo();
-    }
-    video_reader_close(&vr_state);
-    return 0;
+    glDeleteVertexArrays( 1, &VAO );
+    glDeleteBuffers( 1, &VBO );
+    glDeleteBuffers( 1, &EBO );
+    glfwTerminate( );
+    
+    return EXIT_SUCCESS;
 }
