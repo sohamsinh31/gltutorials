@@ -24,10 +24,10 @@ include_directories(${GLEW_INCLUDE_DIRS})
 
 list(APPEND SOURCES
     Random/main.cpp
-    Headers/EBO.cpp
-    Headers/VBO.cpp
-    Headers/VAO.cpp
     Headers/sources.cpp
+    Headers/VAO.cpp
+    Headers/VBO.cpp
+    Headers/EBO.cpp
 )
 
 add_executable(Random ${SOURCES})
