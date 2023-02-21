@@ -1,6 +1,7 @@
 #include <iostream>
 #define GLEW_STATIC
 #include <GL/glew.h>
+#include "math.h"
 #include <GLFW/glfw3.h>
 #include "Headers/VAO.h"
 #include "Headers/VBO.h"
@@ -10,10 +11,11 @@
 const GLuint WIDTH = 800, HEIGHT = 600;
 
 float vertices[] = {
-     0.5f,  0.5f, 0.0f,  // top right
-     0.5f, -0.5f, 0.0f,  // bottom right
-    -0.5f, -0.5f, 0.0f,  // bottom left
-    -0.5f,  0.5f, 0.0f   // top left 
+    // positions
+    // colors
+    0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,  // bottom right
+    -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // bottom left
+    0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f    // top
 };
 
 float indices[] = {
@@ -60,9 +62,14 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT);
 
         shaderProgram.Activate();
+        float timeValue = glfwGetTime();
+        float greenValue = sin(timeValue) / 2.0f + 0.5f;
+        int vertexColorLocation = glGetUniformLocation(shaderProgram.ID,
+                                                       "ourColor");
+        glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
         vao1.Bind();
-        glDrawArrays(GL_TRIANGLES,0,3);
-
+        // now render the triangle
+        glDrawArrays(GL_TRIANGLES, 0, 3);
         glfwSwapBuffers(window);
     }
     vao1.Delete();
