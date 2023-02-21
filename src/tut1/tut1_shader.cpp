@@ -50,7 +50,7 @@ int main(int argc, char const *argv[])
     }
     glViewport(0, 0, screenWidth, screenHeight);
 
-    Shader shaderProgram("def.vert", "def.frag");
+    Shader shaderProgram("Assets/def.vert", "Assets/def.frag");
 
     VAO vao1;
     vao1.Bind();
