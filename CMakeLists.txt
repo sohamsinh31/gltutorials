@@ -30,7 +30,7 @@ list(APPEND SOURCES
 )
 
 add_executable(Random src/main.cpp ${SOURCES})
-add_executable(tut1 src/tut1/tut1_shader.cpp ${SOURCES})
+add_executable(tut1 src/tuts/tut1_shader.cpp ${SOURCES})
 
 if(WIN32)
     list(APPEND EXTRA_LIBS
