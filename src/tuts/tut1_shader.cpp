@@ -14,12 +14,14 @@ const GLuint WIDTH = 800, HEIGHT = 600;
 
 GLfloat vertices[] =
     {
-        -0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f,
-        0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f,
-        0.0f, 0.5f * float(sqrt(3)) * 2 / 3, 0.0f,
-        -0.5f / 2, 0.5f * float(sqrt(3)) / 6, 0.0f,
-        0.5f / 2, 0.5f * float(sqrt(3)) / 6, 0.0f,
-        0.0f, -0.5f * float(sqrt(3)) / 3, 0.0f};
+        //cordinates                                      //colors
+        -0.5f,  -0.5f * float(sqrt(3)) / 3,      0.0f,    0.8f, 0.3f, 0.02f,//lower left corner
+        0.5f,   -0.5f * float(sqrt(3)) / 3,      0.0f,    0.8f ,0.3f, 0.02f,//lower rignt corner
+        0.0f,    0.5f * float(sqrt(3)) * 2 / 3,  0.0f,    0.8f, 0.3f, 0.02f,//uper corner
+        -0.25f,  0.5f * float(sqrt(3)) / 6,      0.0f,    0.8f, 0.3f, 0.02f,//inner left
+        0.25f,   0.5f * float(sqrt(3)) / 6,      0.0f,    0.8f, 0.3f, 0.02f,//inner right
+        0.0f,   -0.5f * float(sqrt(3)) / 3,      0.0f,    0.8f, 0.3f, 0.02f,//inner down
+        };
 
 GLuint indices[] =
     {
