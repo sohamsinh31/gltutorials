@@ -14,10 +14,22 @@ Shader shaderProgram;
 //     -0.5f, 0.5f, 0.0f // top left
 // };
 
-GLfloat indices[] = {
-    0, 1, 3, // first triangle
-    1, 2, 3
-};
+// GLfloat vertices[] =
+//     {
+//         //cordinates                                      //colors
+//         -0.5f,  -0.5f * float(sqrt(3)) / 3,      0.0f, 
+//         0.5f,   -0.5f * float(sqrt(3)) / 3,      0.0f,    
+//         0.0f,    0.5f * float(sqrt(3)) * 2 / 3,  0.0f,   
+//         -0.5f/2,  0.5f * float(sqrt(3)) / 6,      0.0f,    
+//         0.5f/2,   0.5f * float(sqrt(3)) / 6,      0.0f,    
+//         0.0f,   -0.5f * float(sqrt(3)) / 3,      0.0f,   
+//         };
+
+GLuint indices[] =
+    {
+        0, 3, 5,
+        3, 2, 4,
+        5, 4, 1};
 
 GLfloat vertices[] =
     {
@@ -111,12 +123,12 @@ int main()
     glViewport(0, 0, 800, 600);
     while (!glfwWindowShouldClose(window))
     {
-        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         // shaderProgram.Activate();
         // vao1.Bind();
         //glDrawArrays(GL_QUADS, 0, 24);
-        //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        // glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
         display();
         glfwSwapBuffers(window);
         glfwPollEvents();
