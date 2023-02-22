@@ -75,7 +75,9 @@ int main(int argc, char const *argv[])
     vao1.Unbind();
     vbo1.Unbind();
 
-    GLuint VAO, VBO, EBO;
+    GLuint uniId = glGetUniformLocation(shaderProgram.ID,"scale");
+
+    // GLuint VAO, VBO, EBO;
 
     // glGenVertexArrays(1, &VAO);
     // glGenBuffers(1, &VBO);
@@ -101,6 +103,7 @@ int main(int argc, char const *argv[])
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         shaderProgram.Activate();
+        glUniform1f(uniId,0.5f);
         vao1.Bind();
         // glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
