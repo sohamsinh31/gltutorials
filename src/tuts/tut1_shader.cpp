@@ -81,5 +81,7 @@ int main(int argc, char const *argv[])
     vbo1.Delete();
     ebo1.Delete();
     shaderProgram.Delete();
+
+    glfwTerminate();
     return 0;
 }

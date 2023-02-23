@@ -31,6 +31,7 @@ list(APPEND SOURCES
 
 add_executable(Random src/main.cpp ${SOURCES})
 add_executable(tut1 src/tuts/tut1_shader.cpp ${SOURCES})
+add_executable(tut2 src/tuts/textures.cpp ${SOURCES})
 
 if(WIN32)
     list(APPEND EXTRA_LIBS
@@ -46,4 +47,5 @@ endif()
 # target_link_libraries(VGL glfw ${EXTRA_LIBS})
 target_link_libraries(Random GLEW::GLEW ${EXTRA_LIBS})
 target_link_libraries(tut1 GLEW::GLEW ${EXTRA_LIBS})
+target_link_libraries(tut2 GLEW::GLEW ${EXTRA_LIBS})
 # target_link_libraries(Random ${GLEW_LIBRARY})
