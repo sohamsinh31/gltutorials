@@ -2,6 +2,7 @@
 
 std::string get_file(const char* filename)
 {
+    try{
     std::ifstream in(filename,std::ios::binary);
     if(in)
     {
@@ -14,6 +15,11 @@ std::string get_file(const char* filename)
         return contents;
     }
     throw(errno);
+    }
+    catch(int i)
+    {
+        std::cout<<"Shader file not found"<<std::endl;
+    }
 }
 
 Shader :: Shader()
