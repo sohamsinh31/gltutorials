@@ -15,11 +15,13 @@ const GLuint WIDTH = 800, HEIGHT = 600;
 
 GLfloat vertices[] =
     {
-        // cordinates                  //colors
-        -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, // lower left corner
-        -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,  // lower rignt corner
-        0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,   // uper corner
-        0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,  // inner left
+        // positions
+        // colors
+        // texture coords
+        0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,   // top right
+        0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,  // bottom right
+        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom left
+        -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f   // top left
 };
 
 GLuint indices[] =
@@ -62,32 +64,39 @@ int main(int argc, char const *argv[])
     vao1.LinkAttrib(vbo1, 2, 2, GL_FLOAT, 8 * sizeof(float), (void *)(6 * sizeof(float)));
     vao1.Unbind();
     vbo1.Unbind();
+    ebo1.Unbind();
 
+    GLuint uniId = glGetUniformLocation(shaderProgram.ID, "scale");
     // texture
 
     int width_image, height_image, num_col;
-    unsigned char *bytes = SOIL_load_image("Assets/cat.jpg", &width_image, &height_image, &num_col, 0);
+    unsigned char *bytes = SOIL_load_image("Assets/cat.jpg", &width_image, &height_image, 0, SOIL_LOAD_RGBA);
 
     GLuint texture;
     glGenTextures(1, &texture);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture);
 
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );	// Set texture wrapping to GL_REPEAT
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // Set texture wrapping to GL_REPEAT
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     // Set texture filtering
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     // float flatcolor[] = {1.0f,1.0f,1.0f,1.0f};
     //  glTextureParameterfv(GL_TEXTURE_2D,GL_TEXTURE_BORDER_COLOR,flatcolor);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+    glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
+    glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
+
+    printf("%s",bytes);
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width_image, height_image, 0, GL_RGBA, GL_UNSIGNED_BYTE, bytes);
     glGenerateMipmap(GL_TEXTURE_2D);
     SOIL_free_image_data(bytes);
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    GLuint uniId = glGetUniformLocation(shaderProgram.ID, "scale");
     GLuint texuniId = glGetUniformLocation(shaderProgram.ID, "tex0");
     shaderProgram.Activate();
     glUniform1i(texuniId, 0);
