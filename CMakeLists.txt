@@ -27,6 +27,7 @@ list(APPEND SOURCES
     Headers/VAO.cpp
     Headers/VBO.cpp
     Headers/EBO.cpp
+    Headers/texture.cpp
 )
 
 add_executable(Random src/main.cpp ${SOURCES})
