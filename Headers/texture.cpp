@@ -26,7 +26,7 @@ Texture ::Texture(const char *image, GLenum textype, GLenum slot, GLenum format,
     glBindTexture(textype, 0);
 }
 
-void Texture ::texUnit(Shader shader, const char *uniform, GLuint unit)
+void Texture ::texUnit(Shader &shader, const char *uniform, GLuint unit)
 {
     GLuint texuniId = glGetUniformLocation(shader.ID, uniform);
     shader.Activate();
