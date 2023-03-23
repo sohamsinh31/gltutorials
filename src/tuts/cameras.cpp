@@ -10,7 +10,7 @@
 #include "Headers/EBO.h"
 #include "Headers/texture.h"
 #include "math.h"
-#include "src/SOIL2/SOIL2.h"
+#include "SOIL/SOIL.h"
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
